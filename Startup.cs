@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using UserAdminTool.Models;
 
 namespace UserAdminTool
 {
@@ -20,6 +23,8 @@ namespace UserAdminTool
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(Configuration["Data:Identity:ConnectionString"]));
+            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>().AddDefaultTokenProviders();
             services.AddMvc();
         }
 
@@ -31,6 +36,8 @@ namespace UserAdminTool
                 app.UseDeveloperExceptionPage();
             }
 
+            // Make the authentication service available to the application (Order matters here)
+            app.UseAuthentication();
             app.UseMvcWithDefaultRoute();
         }
     }
