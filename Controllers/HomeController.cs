@@ -1,9 +1,18 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using UserAdminTool.Models;
 
 namespace UserAdminTool.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index() => View();
+        private UserManager<AppUser> userManager;
+
+        public HomeController(UserManager<AppUser> usrMgr)
+        {
+            userManager = usrMgr;
+        }
+
+        public ViewResult Index() => View(userManager.Users);
     }
 }
